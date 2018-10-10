@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Vue SPA Sample</title>
@@ -7,6 +8,7 @@
     /* 割愛 */
   </style>
 </head>
+
 <body>
   <div id="app">
     <nav>
@@ -37,11 +39,48 @@
     </div>
   </script>
 
+  <!-- ユーザー詳細コンポーネント -->
+  <script type="text/x-template" id="user-detail">
+    <div>
+      <div class="loading" v-if="loading">読み込み中...</div>
+      <div v-if="error" class="error">
+        {{ error }}
+      </div>
+      <div v-if="user">
+        <h2>{{ user.name }}</h2>
+        <p>{{ user.description }}</p>
+      </div>
+    </div>
+  </script>
+
   <!-- Vue Script -->
   <script>
-    // jsonを返す関数
-    var getUsers = function(callback) {
+    var userData = [
+      {
+        id: 1,
+        name: "Kento Takano",
+        description: "本物のフロントエンドエンジニア"
+      },
+      {
+        id: 2,
+        name: "Yui Aragaki",
+        description: "日本で最も美人な女優"
+      }
+    ]
+
+    // 該当userの情報を返す
+    var getUser = function(userId, callback) {
       setTimeout(function() {
+        var filteredUsers = userData.filter(function(user) {
+          return user.id === parseInt(userId, 10)
+        })
+        callback(null, filteredUsers && filteredUsers[0])
+      }, 1000)
+    }
+
+    // user全件を返す
+    var getUsers = function (callback) {
+      setTimeout(function () {
         callback(null, [
           {
             id: 1,
@@ -58,15 +97,15 @@
     // ユーザー一覧コンポーネント定義
     var UserList = {
       template: "#user-list",
-      data: function() {
+      data: function () {
         return {
           loading: false,                   // 初期値
-          users: function() { return [] },  // 初期値
+          users: function () { return [] },  // 初期値
           error: null                       // 初期値
         }
       },
       // データ初期化後にデータ取得
-      created: function() {
+      created: function () {
         this.fetchData()
       },
 
@@ -75,12 +114,12 @@
         "$route": "fetchData"
       },
       methods: {
-        fetchData: function() {
+        fetchData: function () {
           this.loading = true
           // 取得したデータの結果をusersに格納する
-          getUsers(( function(err, users) {
+          getUsers((function (err, users) {
             this.loading = false
-            if(err) {
+            if (err) {
               this.error = err.toString()
             } else {
               this.users = users
@@ -100,6 +139,10 @@
         {
           path: "/users",
           component: UserList
+        },
+        {
+          path: "/users/:userId",
+          component: UserDetail
         }
       ]
     })
@@ -109,4 +152,5 @@
     }).$mount("#app")
   </script>
 </body>
+
 </html>
