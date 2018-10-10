@@ -74,7 +74,20 @@
       watch: {
         "$route": "fetchData"
       },
-      // TODO: methods を実装 fetchData
+      methods: {
+        fetchData: function() {
+          this.loading = true
+          // 取得したデータの結果をusersに格納する
+          getUsers(( function(err, users) {
+            this.loading = false
+            if(err) {
+              this.error = err.toString()
+            } else {
+              this.users = users
+            }
+          }).bind(this))
+        }
+      }
     }
     var router = new VueRouter({
       routes: [
