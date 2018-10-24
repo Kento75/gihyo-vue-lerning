@@ -43,6 +43,11 @@
         フィルタしない
       </li>
     </ul>
+
+    <h2>保存と復元</h2>
+    <button type="button" v-on:click="save">保存</button>
+    <button type="button" v-on:click="restore">復元</button>
+
   </div>
 </template>
 
@@ -117,6 +122,18 @@ export default {
         id: task.id,
       })
     },
+
+    // 現在の状態を保存する
+    save() {
+      // saveアクションをコミット
+      this.$store.dispatch('save')
+    },
+
+    // 保存されている状態を復元
+    restore() {
+      // restoreアクションをコミット
+      this.$store.dispatch('restore')
+    }
   }
 }
 </script>
